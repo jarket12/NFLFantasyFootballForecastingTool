@@ -1,3 +1,7 @@
+import pandas as pd
+import numpy as np
+from pmdarima.arima import auto_arima
+
 for num in range(10, 200):
     try:
         file_path1 = "2023/weekly data/WR/data_temp_backup"
