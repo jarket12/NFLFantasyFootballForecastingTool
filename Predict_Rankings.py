@@ -21,12 +21,14 @@ for num in range(10, 200):
         data = data.sort_values(by=['date'])
         data = data.fillna(0)
         ch_data = ['YDS', 'TD', 'REC', 'ydr_rush', 'FL']
+        
         def cum_sum_function(ch_data, data):
             x=0
             for i in ch_data:
                 data[ch_data[x] + '_csum'] = data.groupby(['Player'])[ch_data[x]].cumsum()
                 x=x+1
             return data
+            
         find_cs = cum_sum_function(ch_data, data)
         find_cs = find_cs.sort_values(by=['date'])
         cs_data = ('YDS_csum', 'TD_csum', 'REC_csum', 'ydr_rush_csum', 'FL_csum')
@@ -35,6 +37,7 @@ for num in range(10, 200):
         train = data1.iloc[:13] 
         test = data1.iloc[13:]
         final_df = pd.DataFrame(index = test.index, columns=[test.columns])
+        
         x=0
         for i in cs_data:
             model = auto_arima(train[cs_data[x]], trace=True, error_action='ignore', suppress_warnings=True)
@@ -54,6 +57,7 @@ for num in range(10, 200):
         data3.columns = data3.columns.str.rstrip('_csum')
         data3 = data3.dropna()
         data3 = data3.iloc[[-1]]
+        
         def calc_actual_pts(df):
             df['actual_pts'] = df.apply(lambda row: (row.YDS *0.1) + (row.TD *6) + (row.REC *0.5) 
                                     + (row.ydr_rush *0.1) + (row.FL *-2), axis=1)
